@@ -155,12 +155,10 @@ if ($muxFound) {
 }
 
 # ------------------------------------------------------ 8. driver store state
-Write-Section '8. DISPLAY DRIVER PACKAGES IN DRIVER STORE'
-$drv = pnputil /enum-drivers
-$intel = ($drv | Select-String -Pattern 'iigd_dch\.inf').Count
-$nv    = ($drv | Select-String -Pattern 'nv_dispi|nvaci|nvmii' -SimpleMatch:$false).Count
-Write-Item 'Intel graphics INFs' $intel
-Write-Item 'NVIDIA display INFs' $nv
+Write-Section '8. DISPLAY-CLASS DRIVERS WINDOWS HAS BOUND'
+Get-CimInstance Win32_PnPSignedDriver -Filter "DeviceClass='DISPLAY'" |
+    Select-Object DeviceName, DriverProviderName, DriverVersion, InfName |
+    Format-Table -AutoSize | Out-String -Width 130 | Write-Host
 
 Write-Host ''
 Write-Host 'Done. Read section 3, 4 and 5 together - that is the whole diagnosis.' -ForegroundColor Cyan
